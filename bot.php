@@ -6,6 +6,9 @@ use App\Bot;
 use App\Commands;
 use App\WeatherService;
 use Longman\TelegramBot\Telegram;
+use Src\Films\CommandsFilms;
+use Src\Films\FilmsService;
+use Src\Films\Films;
 
 // Загрузка переменных окружения
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -15,6 +18,9 @@ $dotenv->load();
 if (empty($_ENV['TELEGRAM_BOT_API_KEY']) || empty($_ENV['TELEGRAM_BOT_USERNAME'])) {
     die('Переменные окружения TELEGRAM_BOT_API_KEY или TELEGRAM_BOT_USERNAME не определены.');
 }
+if (empty($_ENV['OMDb_API_KEY'])) {
+    die('Переменные окружения OMDb_API_KEY не определены.');
+}
 
 // Конфигурация
 $config = require __DIR__ . '/config/config.php';
@@ -22,8 +28,17 @@ $config = require __DIR__ . '/config/config.php';
 // Инициализация зависимостей
 $weatherService = new WeatherService($config['open_weather_map']['api_key']);
 $commands = new Commands($weatherService);
+
+// Инициализация зависимостей для OMBd
+$filmsService = new FilmsService($config['omdb_films_api']['api_key']);
+$commandsFilms = new CommandsFilms($filmsService);
+
+// Общая часть инициализации
 $telegram = new Telegram($config['telegram']['api_key'], $config['telegram']['username']);
 
 // Запуск бота
 $bot = new Bot($telegram, $commands);
+$botFilm = new Films($telegram, $commandsFilms);
+
 $bot->run();
+$botFilm->run();

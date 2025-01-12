@@ -32,6 +32,7 @@ class Bot{
                     );
                 }
             }
+            
         } catch (TelegramException $e) {
             echo 'Ошибка: ' . $e->getMessage();
         }

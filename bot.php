@@ -3,6 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use App\Bot;
+use App\BotManager;
 use App\Commands;
 use App\WeatherService;
 use Longman\TelegramBot\Telegram;
@@ -36,9 +37,10 @@ $commandsFilms = new CommandsFilms($filmsService);
 // Общая часть инициализации
 $telegram = new Telegram($config['telegram']['api_key'], $config['telegram']['username']);
 
-// Запуск бота
+// Создание ботов
 $bot = new Bot($telegram, $commands);
 $botFilm = new Films($telegram, $commandsFilms);
 
-$bot->run();
-$botFilm->run();
+// Запуск менеджера ботов
+$botManager = new BotManager($bot, $botFilm);
+$botManager->run();

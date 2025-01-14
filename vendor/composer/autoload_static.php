@@ -23,6 +23,10 @@ class ComposerStaticInit774ca35e7500ad9ec0aaa529992d90f3
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Src\\Films\\' => 10,
         ),
+        'R' => 
+        array (
+            'React\\EventLoop\\' => 16,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -67,6 +71,10 @@ class ComposerStaticInit774ca35e7500ad9ec0aaa529992d90f3
         'Src\\Films\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Films',
+        ),
+        'React\\EventLoop\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/react/event-loop/src',
         ),
         'Psr\\Log\\' => 
         array (

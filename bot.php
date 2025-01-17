@@ -39,8 +39,8 @@ $telegram = new Telegram($config['telegram']['api_key'], $config['telegram']['us
 
 // Создание ботов
 $bot = new Bot($telegram, $commands);
-$botFilm = new Films($telegram, $commandsFilms);
+
 
 // Запуск менеджера ботов
-$botManager = new BotManager($bot, $botFilm);
+$botManager = new BotManager($bot);
 $botManager->run();

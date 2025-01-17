@@ -4,17 +4,22 @@ namespace App;
 
 
 use App\Bot;
+use Src\Films\CommandsFilms;
 use Src\Films\Films;
 
-class BotManager
+
+
+
+
+ class BotManager 
 {
     private $bot;
     private $botFilm;
 
-    public function __construct(Bot $bot, Films $botFilm)
+    public function __construct(Bot $bot)
     {
         $this->bot = $bot;
-        $this->botFilm = $botFilm;
+     
     }
 
     public function run(): void
@@ -22,21 +27,7 @@ class BotManager
         // Запуск основного бота
         $this->bot->run();
 
-        // Запуск бота для фильмов
-        $this->botFilm->run();
-
-    // while (true) {
-    //     $this->bot->run(); // Один шаг основного бота
-    //     $this->botFilm->run(); // Один шаг бота для фильмов
-
-    //     sleep(1); // Пауза между итерациями 
-    //     break;
-    // }
-
-
-     }
      
-
-       
     }
+}
 

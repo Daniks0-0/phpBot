@@ -12,9 +12,7 @@ class WeatherService{
         
             $url = 'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($cityName) . '&units=metric&appid=' . $this->apiKey;
             $response = @file_get_contents($url); // С помощью функции file_get_contents отправляется запрос к API
-        if($response === false){
-            return 'Не удалось получить данные о погоде. Проверьте название города';
-    } 
+ 
     $result = json_decode($response, true); //декодируем JSON
 
 //вытаскиваем из json данные (температуру,скорость ветра)
@@ -41,6 +39,45 @@ if ($weather_type >= 200 && $weather_type <= 232) {
 }
 
 return $cityName . ': ' . $emoji_icon . ' Температура: ' . $temp . '°C, скорость ветра: ' . $wind . ' м/с.';
+}
+public function getWeatherFiveDays(string $cityName): string {
+    // Формируем URL для запроса
+    $url = 'https://api.openweathermap.org/data/2.5/forecast?q=' . urlencode($cityName) . '&appid=' . $this->apiKey . '&units=metric&lang=ru';
+
+    // Выполняем запрос к API
+    $response = @file_get_contents($url);
+
+    // Проверяем, удалось ли получить данные
+    if ($response === false) {
+        return 'Не удалось найти данные о погоде на 5 дней';
+    }
+
+    // Декодируем JSON-ответ
+    $result = json_decode($response, true);
+
+    // Массив для хранения данных о погоде
+    $weatherData = [];
+
+    // Проходим по каждому прогнозу
+    foreach ($result['list'] as $forecast) {
+        // Извлекаем дату и время
+        $dateTime = $forecast['dt_txt'];
+
+        // Извлекаем температуру
+        $temp = $forecast['main']['temp'];
+
+        // Извлекаем скорость ветра
+        $wind = $forecast['wind']['speed'];
+
+        // Извлекаем описание погоды
+        $weatherDescription = $forecast['weather'][0]['description'];
+
+        // Формируем строку с данными
+        $weatherData[] = "{$cityName} - {$dateTime}: Температура {$temp}°C, Ветер {$wind} м/с, Погода: {$weatherDescription}";
+    }
+
+    // Возвращаем данные в виде строки
+    return $cityName . ":\n" . implode("\n", $weatherData);
 }
 }
 

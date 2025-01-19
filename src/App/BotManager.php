@@ -4,8 +4,6 @@ namespace App;
 
 
 use App\Bot;
-use Src\Films\CommandsFilms;
-use Src\Films\Films;
 
 
 
@@ -14,7 +12,7 @@ use Src\Films\Films;
  class BotManager 
 {
     private $bot;
-    private $botFilm;
+
 
     public function __construct(Bot $bot)
     {

@@ -1,6 +1,7 @@
 <?php
 //отвечает за взаимодейтсвие с OpenWeatherApi
 namespace App;
+use Longman\TelegramBot\Request;
 
 class WeatherService{
     private $apiKey; //храним api - ключи 
@@ -58,8 +59,13 @@ public function getWeatherFiveDays(string $cityName): string {
     // Массив для хранения данных о погоде
     $weatherData = [];
 
-    // Проходим по каждому прогнозу
-    foreach ($result['list'] as $forecast) {
+     // Фильтруем данные, оставляя только 12:00 каждого дня
+     $filteredForecasts = array_filter($result['list'], function ($forecast) {
+        return date('H', strtotime($forecast['dt_txt'])) === '12'; // Оставляем только 12:00
+    });
+
+    // Проходим по каждому отфильтрованному прогнозу
+    foreach ($filteredForecasts as $forecast) {
         // Извлекаем дату и время
         $dateTime = $forecast['dt_txt'];
 
@@ -79,5 +85,42 @@ public function getWeatherFiveDays(string $cityName): string {
     // Возвращаем данные в виде строки
     return $cityName . ":\n" . implode("\n", $weatherData);
 }
+
+public function getWeatherConditions(string $cityName): string
+{
+    $url = 'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($cityName) . '&appid=' . $this->apiKey . '&units=metric&lang=ru';
+
+    // Выполняем запрос к API
+    $response = @file_get_contents($url);
+
+    if ($response === false) {
+        return 'Не удалось получить данные о погоде.';
+    }
+
+    $result = json_decode($response, true);
+
+    // Проверяем, есть ли данные
+    if ($result['cod'] !== '200') {
+        return 'Город не найден.';
+    }
+
+    // Извлекаем данные из первого элемента списка
+    $visibility = $result['list'][0]['visibility'] ?? 'Нет данных';
+    $windSpeed = $result['list'][0]['wind']['speed'] ?? 'Нет данных';
+    $windGust = $result['list'][0]['wind']['gust'] ?? 'Нет данных';
+
+    // Формируем строку с результатом
+    return $cityName . "\n" .
+           'Видимость: ' . $visibility . " м\n" .
+           'Скорость ветра: ' . $windSpeed . " м/с\n" .
+           'Порыв ветра: ' . $windGust . " м/с";
 }
+}
+
+
+  
+
+
+
+
 

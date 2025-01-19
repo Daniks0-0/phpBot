@@ -48,6 +48,31 @@ class Commands
                     ]);
                 }
                 break;
+
+                case str_starts_with($text, 'Ветер'):
+                    $city = trim(str_replace('Ветер', '', $text));
+                    if (!empty($city)) {
+                        $weatherText = $this->weatherService->getWeatherConditions($city);
+                        Request::sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => $weatherText,
+                        ]);
+                    } else {
+                        Request::sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => 'Пожалуйста, укажите город после команды "Ветер".',
+                        ]);
+                    }
+                    break;
+
+            
+         
+                default:
+                Request::sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => 'Введите пожалуйста команду ещё раз ',
+                ]);
+                break;
         
     
         }

@@ -89,32 +89,26 @@ public function getWeatherFiveDays(string $cityName): string {
 public function getWeatherConditions(string $cityName): string
 {
     $url = 'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($cityName) . '&appid=' . $this->apiKey . '&units=metric&lang=ru';
-
-    // Выполняем запрос к API
     $response = @file_get_contents($url);
-
     if ($response === false) {
         return 'Не удалось получить данные о погоде.';
     }
 
     $result = json_decode($response, true);
-
-    // Проверяем, есть ли данные
-    if ($result['cod'] !== '200') {
+    if ((int)$result['cod'] !== 200) {
         return 'Город не найден.';
     }
 
-    // Извлекаем данные из первого элемента списка
-    $visibility = $result['list'][0]['visibility'] ?? 'Нет данных';
-    $windSpeed = $result['list'][0]['wind']['speed'] ?? 'Нет данных';
-    $windGust = $result['list'][0]['wind']['gust'] ?? 'Нет данных';
+    $visibility = $result['visibility'] ?? 'Нет данных';
+    $windSpeed = $result['wind']['speed'] ?? 'Нет данных';
+    $windGust = $result['wind']['gust'] ?? 'Нет данных';
 
-    // Формируем строку с результатом
     return $cityName . "\n" .
            'Видимость: ' . $visibility . " м\n" .
            'Скорость ветра: ' . $windSpeed . " м/с\n" .
            'Порыв ветра: ' . $windGust . " м/с";
 }
+
 }
 
 
